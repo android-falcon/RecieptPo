@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="#EEEEF1"
+    tools:context=".Acitvits.DetailsVochers_report">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="7dp"
+        android:layout_weight="7"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="26dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:text="@string/vochernum"
+            android:layout_weight="1"
+            android:padding="2dp"
+            android:textStyle="bold"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/ORDERNO"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="date"
+            android:layout_gravity="center"
+            android:gravity="center"
+
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_weight="7"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        android:layout_marginHorizontal="26dp"
+        >
+
+
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp"
+            android:text="@string/customer"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/Cus_name"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="date"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginEnd="4dp"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            />
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:layout_weight="7"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="26dp"
+        >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:text="@string/date"
+            android:padding="2dp"
+            android:layout_weight="1.2"
+            android:textStyle="bold"
+            android:gravity="start|center_vertical"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="date"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:drawableStartCompat="@drawable/ic_baseline_calendar_today_24" />
+
+
+
+
+
+    </LinearLayout>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/basketListCard"
+        android:layout_width="match_parent"
+        android:layout_weight="2.1"
+        android:layout_marginBottom="5dp"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/customer_textInput"
+        android:layout_centerHorizontal="true"
+        android:layout_marginHorizontal="26dp"
+        android:layout_marginTop="10dp"
+        app:cardCornerRadius="15dp"
+        app:cardElevation="4dp">
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="23dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/item_code_"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/item_Name_"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/item_Qty"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/item_price"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/discount_"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/free"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:text="@string/tax"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="14sp" />
+
+
+                    <TextView
+                        android:layout_width="20dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/alegreya"
+                        android:gravity="center"
+                        android:lineHeight="19sp"
+                        android:background="@drawable/ic_baseline_remove_circle_24"
+                        android:visibility="invisible"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="11dp"
+                    android:background="@color/colorPrimaryDark" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/ordersDetalisRec"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+
+            </LinearLayout>
+        </HorizontalScrollView>
+
+
+    </com.google.android.material.card.MaterialCardView>
+    <TableRow
+        android:layout_height="match_parent"
+        android:layout_weight="7"
+
+        android:background="@color/gray_btn_bg_color"
+        android:layout_width="match_parent">
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:visibility="gone"
+
+            android:layout_weight="1"
+            android:text="@string/total"/>
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:text="0.0"
+            android:visibility="gone"
+            android:gravity="center"
+            android:id="@+id/total"/>
+
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:text="@string/net_sales"/>
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:text="0.0"
+            android:gravity="center"
+            android:id="@+id/netsales"/>
+
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:layout_weight="1"
+            android:text="@string/tax"/>
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:layout_weight="1"
+            android:text="0.0"
+            android:gravity="center"
+            android:id="@+id/tax"/>
+
+    </TableRow>
+</LinearLayout>

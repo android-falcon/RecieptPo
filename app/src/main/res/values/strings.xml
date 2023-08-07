@@ -1,0 +1,94 @@
+<resources>
+    <string name="app_name">ReceiptApp</string>
+    <string name="username">UserName</string>
+    <string name="password">Password</string>
+    <string name="Login">Login</string>
+    <string name="OpenSetting">Open Setting</string>
+    <string name="required">*Required</string>
+
+    <string name="item_Name_">Item Name</string>
+    <string name="item_code_">ItemCode</string>
+    <string name="item_price">Price</string>
+    <string name="item_Qty">Qty</string>
+    <string name="free">bonus</string>
+    <string name="ok">OK</string>
+    <string name="invaledZero">Invaled Zero</string>
+    <string name="customer">Customer</string>
+    <string name="PassowrdSetting">Passowrd Setting</string>
+    <string name="MaxVoMsg1">Max Vocher Num is</string>
+    <string name="MaxVoMsg2">,so you can set Vocher Num</string>
+    <string name="MaxVoMsg3">and above</string>
+    <string name="savedSuccsesfule">Saved Successfully</string>
+    <string name="fillbasket">fill The List with Items!!</string>
+    <string name="order_requst">purchase_Voch</string>
+    <string name="cash">Cash</string>
+    <string name="cridt">Credit</string>
+    <string name="paymethod">Pay Method</string>
+    <string name="VochType">Voch Type</string>
+    <string name="vocher">Sale Vocher</string>
+    <string name="confirm_title">Confirm</string>
+    <string name="messageExit">Are You Sure To Exit ?</string>
+    <string name="changevochertype">Are You Sure To change Vocher Type? You will lose all data </string>
+    <string name="messageExit2">You will lose all data, Are You Sure To Exit ?</string>
+    <string name="messageExit5">You will lose all data of Vouchers, Are You Sure ?</string>
+    <string name="messageExit3">Are You Sure To Exit ?</string>
+    <string name="messageExit4">You will lose all data, Are You Sure To change po  ?</string>
+    <string name="No">No</string>
+    <string name="importdata">Import Data</string>
+    <string name="exportdata">Export data</string>
+    <string name="exportdatamsg">Export data before Import</string>
+    <string name="save">Save</string>
+    <string name="saverec">Save Receipt</string>
+    <string name="colse">Close</string>
+    <string name="discount_">Discount</string>
+    <string name="addTotaldis">add Total dis</string>
+    <string name="VochersReport">Vochers Report</string>
+    <string name="app_disc_value2">disc value</string>
+    <string name="app_disc_type1">Value</string>
+    <string name="app_disc_type2">Percent</string>
+    <string name="total">Total</string>
+    <string name="net_sales">Net Sales</string>
+    <string name="vlauoftotaldis">Total Dis Value</string>
+    <string name="search">Search</string>
+    <string name="category">Category</string>
+    <string name="kind">Kind</string>
+    <string name="yes">Yes</string>
+    <string name="delete">Are you sure you want to
+            \n delete this entry?</string>
+    <string name="MaxVoMsg5">يجب اختيار رقم مختلف عن تسلسل الفواتير</string>
+    <string name="MaxVoMsg6">يجب اختيار رقم مختلف عن تسلسل طلبات الشراء</string>
+    <string name="aviQTY">The available quantity of this Item is</string>
+    <string name="notenoughQTY">There is not enough quantity</string>
+
+    <string name="selectcustoumer">Select Customer</string>
+    <string name="freecondition">You cannot add a bonus greater than the item balance</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="vochernum">Vocher Num</string>
+    <string name="preview">preview</string>
+    <string name="totalqty">Total Qty</string>
+    <string name="date">Date</string>
+    <string name="tax">Tax</string>
+    <string name="totaltax">Total Tax</string>
+    <string name="PO.NO">PO.NO</string>
+    <string name="PoQty">Po Qty</string>
+    <string name="customerName">Vendor Name</string>
+    <string name="qtyerror">The entered quantity is greater than the original quantity </string>
+    <string name="itemexists">itemNumber Not correct </string>
+    <string name="itemexists2">No Items In this PO </string>
+    <string name="serial">Serial No</string>
+    <string name="getdata">Start geting data</string>
+    <string name="savedata">Start Saving data</string>
+    <string name="exportstock">Exporting Stock</string>
+    <string name="savedata2">Exporting Vouchers</string>
+    <string name="enteritembarcode">Enter ItemBarcode</string>
+    <string name="getMAXVOCH">geting MAX Vouch</string>
+    <string name="cus_num">Customer number</string>
+    <string name="Total">Total</string>
+    <string name="itemexists6">Warning: This Item is already in This Voucher</string>
+    <string name="covrate">  عدد الحبات بالوحدة</string>
+
+    <string name="unit"> UnitId</string>
+
+
+</resources>

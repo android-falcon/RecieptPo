@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/lin"
+    tools:context=".Acitvits.Login">
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/lin1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <ImageView
+            android:background="@drawable/background_gradient"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+        <ImageView
+            android:layout_weight="1"
+
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_marginTop="100dp"
+        android:id="@+id/layoutInput"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/background_white"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:text="@string/username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:drawablePadding="20dp"
+            android:drawableRight="@drawable/ic_baseline_person_24"
+            android:id="@+id/unameEdt"
+              android:maxLines="1"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <!--        <TextView-->
+        <!--            android:layout_marginTop="5dp"-->
+        <!--            android:text="email"-->
+        <!--            android:layout_width="wrap_content"-->
+        <!--            android:layout_height="wrap_content" />-->
+        <!--        <EditText-->
+        <!--            android:drawablePadding="20dp"-->
+        <!--            android:drawableRight="@drawable/ic_baseline_person_24"-->
+        <!--         -->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="wrap_content" />-->
+        <TextView
+            android:layout_marginTop="5dp"
+            android:text="@string/password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditText
+            android:drawablePadding="20dp"
+            android:drawableRight="@drawable/ic_baseline_lock_24"
+            android:hint="******"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:id="@+id/passEdt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:textColor="#FFF"
+            android:background="@drawable/rec_gradient"
+            android:layout_marginTop="20dp"
+            android:textAllCaps="false"
+            android:text="@string/Login"
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_marginTop="10dp"
+            android:textColor="#FFF"
+            android:background="@drawable/rec_gradient_fb"
+            android:textAllCaps="false"
+            android:text="@string/OpenSetting"
+            android:id="@+id/OpenSetting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <androidx.appcompat.widget.AppCompatButton
+            android:textColor="#FFF"
+            android:background="@drawable/rec_gradient"
+            android:layout_marginTop="20dp"
+            android:textAllCaps="false"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:fontFamily="cursive"
+        android:text="Login"
+        android:gravity="center_vertical|bottom"
+        android:textColor="#FFF"
+        android:textSize="35sp" />
+    <LinearLayout
+        android:id="@+id/ipSettings_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin1"
+        android:background="@drawable/bg_top_radius"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_settings_24"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="IP Settings"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:letterSpacing="0.1"
+            />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:text=" V. 29"
+        android:gravity="center_vertical|bottom"
+        android:textColor="@color/purple_500"
+        android:textSize="17sp" />
+</RelativeLayout>

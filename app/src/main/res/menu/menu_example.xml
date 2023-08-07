@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+    <item android:id="@+id/importdata"
+        android:title="@string/importdata" />
+
+
+    <item android:id="@+id/exportdata"
+        android:title="@string/exportdata"
+         />
+    <item android:id="@+id/addTotaldis"
+        android:title="@string/addTotaldis"
+        />
+    <item android:id="@+id/Report"
+        android:title="@string/VochersReport"
+        />
+</menu>

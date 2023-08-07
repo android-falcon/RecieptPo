@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#097969</color>
+    <color name="purple_700">#097969</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="colorPrimary">#AFE1AF</color>
+    <color name="colorPrimaryDark">#097969</color>
+    <color name="layer1">#F5F1F5F5</color>
+    <color name="layer2">#E8F0F8FF</color>
+    <color name="layer3">#e5e4e2</color>
+    <color name="layer4">#B6B6B4</color>
+    <color name="exit">#C24641</color>
+    <color name="red_dark">#791916</color>
+    <color name="purple_dark">#F0500650</color>
+    <color name="exit_hover">#E77471</color>
+    <color name="light_blue_over">#E0FFFF</color>
+    <color name="light_blue">#C2DFFF</color>
+    <color name="dark_blue">#89cbee</color>
+    <color name="blue_ice">#368BC1</color>
+    <color name="jeans_blue">#a0cfec</color>
+    <color name="floor">#A4E8ADAA</color>
+    <color name="white_dark">#E9FFFFFF</color>
+
+    <color name="white_two">#85E4DCDC</color>
+
+    <color name="black_alpha">#AD000000</color>
+    <color name="darkblue_1">#043C58</color>
+    <color name="darkblue_">#DF075F8B</color>
+    <color name="darkblue_2">#032A3D</color>
+
+    <color name="n_blue">#BFB5CE</color>
+    <color name="yellow">#D0585F72</color>
+    <color name="yellow_alpha">#A1F5BC28</color>
+    <color name="yellow1">#EBE7D433</color>
+    <color name="yellow_hover">#EB948927</color>
+    <color name="green_dark">#09500C</color>
+</resources>

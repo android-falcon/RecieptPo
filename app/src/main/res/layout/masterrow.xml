@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="50dp">
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+
+        android:padding="1dp">
+        <androidx.appcompat.widget.AppCompatButton
+            android:layout_height="match_parent"
+            android:id="@+id/preview"
+        android:backgroundTint="@color/colorPrimaryDark"
+            android:layout_width="70dp"
+            android:textSize="11sp"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:text="@string/preview"/>
+<!--        <TextView-->
+
+<!--            android:layout_width="60dp"-->
+<!--            android:id="@+id/preview"-->
+<!--            android:layout_weight="1"-->
+<!--            android:gravity="center"-->
+<!--            android:background="@drawable/savebtn"-->
+<!--            android:text="@string/preview"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:textColor="@color/white"-->
+<!--            android:textSize="15sp"-->
+<!--            />-->
+        <TextView
+            android:id="@+id/serial"
+            android:layout_width="100dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:visibility="gone"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            />
+        <TextView
+            android:id="@+id/vochernum"
+            android:layout_width="100dp"
+            android:layout_weight="1"
+            android:gravity="center"
+
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            />
+        <TextView
+
+            android:layout_width="2dp"
+android:visibility="invisible"
+            android:gravity="center"
+
+            android:layout_height="match_parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@color/colorPrimaryDark"
+            />
+        <TextView
+            android:id="@+id/customer"
+            android:layout_width="130dp"
+            android:layout_weight="1"
+            android:gravity="center"
+
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            />
+        <TextView
+
+            android:layout_width="2dp"
+            android:visibility="invisible"
+            android:gravity="center"
+
+            android:layout_height="match_parent"
+            android:textColor="@color/colorPrimaryDark"
+            android:background="@color/colorPrimaryDark"
+            />
+
+        <TextView
+            android:id="@+id/net_sales"
+            android:layout_width="100dp"
+            android:layout_weight="1.2"
+            android:gravity="center"
+
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            />
+
+
+
+        <TextView
+
+            android:layout_width="2dp"
+
+            android:gravity="center"
+            android:visibility="invisible"
+            android:layout_height="match_parent"
+
+            android:background="@color/colorPrimaryDark"
+            />
+        <TextView
+            android:id="@+id/totalqty"
+            android:layout_width="60dp"
+            android:layout_weight="1.2"
+            android:gravity="center"
+            android:layout_height="match_parent"
+            android:textColor="@color/black"
+
+            android:textSize="15sp"
+            />
+
+
+        <TextView
+
+            android:layout_width="2dp"
+
+            android:gravity="center"
+            android:visibility="invisible"
+            android:layout_height="match_parent"
+
+            android:background="@color/colorPrimaryDark"
+            />
+
+    </TableRow>
+</LinearLayout>
