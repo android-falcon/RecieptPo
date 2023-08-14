@@ -23,11 +23,13 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.hiaryabeer.receiptapp.Interfaces.ApiService;
 import com.hiaryabeer.receiptapp.R;
 import com.hiaryabeer.receiptapp.models.AppDatabase;
 import com.hiaryabeer.receiptapp.models.CustomerInfo;
 import com.hiaryabeer.receiptapp.models.GeneralMethod;
 import com.hiaryabeer.receiptapp.models.ImportData;
+import com.hiaryabeer.receiptapp.models.ItemSwitch;
 import com.hiaryabeer.receiptapp.models.Item_Unit_Details;
 import com.hiaryabeer.receiptapp.models.Items;
 import com.hiaryabeer.receiptapp.models.ItemsBalance;
@@ -42,6 +44,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import cn.pedant.SweetAlert.SweetAlertDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class Login extends AppCompatActivity {
  AppCompatButton LoginButton,OpenSetting;
@@ -60,11 +68,13 @@ public class Login extends AppCompatActivity {
     public static List<CustomerInfo> allCustomers=new ArrayList<>();
     public static List<CustomerInfo> listAllVendor=new ArrayList<>();
     public static List<ItemsBalance> listAlItemsBalances=new ArrayList<>();
+    ArrayList<ItemSwitch> listAllItemSwitch = new ArrayList<>();
     long MaxVo;
     long Maxorder;
     AppDatabase mydatabase;
     EditText unameEdt, passEdt;
     EditText editPassword;
+    ApiService apiService;
     public static String salmanNumber="";
     public static List<User> allUsers= new ArrayList<>();;
     public static String userNum="";
@@ -511,257 +521,304 @@ public class Login extends AppCompatActivity {
                                 //          importData.getAllItems3();
 
 
-                                importData.getAllItems(new ImportData.GetItemsCallBack() {
-                                    @Override
-                                    public void onResponse(JSONObject response) {
+//                            importData.fetchCallData();
+                            SweetAlertDialog  pDialog = new SweetAlertDialog(Login.this, SweetAlertDialog.PROGRESS_TYPE);
 
-                                        try {
-                                           // response.toString().getBytes(StandardCharsets.UTF_8);
-                                            JSONArray itemsArray = response.getJSONArray("Items_Master");
+                            pDialog.getProgressHelper().setBarColor(Color.parseColor("#115571"));
+                            pDialog.setTitleText("Loading ...");
+                            pDialog.setCancelable(false);
+                            pDialog.show();
+                            Log.e("onResponse", "fetchCallData" );
+                            String link = "http://" + ipAddress.trim() ;
 
-                                            for (int i = 0; i < itemsArray.length(); i++) {
+                            Retrofit retrofit = RetrofitInstance.getInstance(link);
+                            Log.e("link",link+"");
+                            apiService = retrofit.create(ApiService.class);
+                            Call<Items.ItemsResult> myData = apiService.gatItemInfoDetail("1",coNo);
+                            myData.enqueue(new Callback<Items.ItemsResult>() {
+                                @Override
+                                public void onResponse(Call<Items.ItemsResult>call, retrofit2.Response<Items.ItemsResult> response) {
+                                    if (!response.isSuccessful()) {
+                                        pDialog.dismissWithAnimation();
+                                        Log.e("onResponse", "not=" + response.message());
+                                    } else {
+                                        Items.ItemsResult rs = response.body();
+                                        Log.e("onResponse", "rs=" + rs.getAllItems().size());
+                                        ImportData.AllImportItemlist.addAll(rs.getAllItems());
+                                        allUnitDetails.addAll(rs.getAllUnits());
+                                        listAlItemsBalances.addAll(rs.getAllBalance());
+                                        Log.e("onResponse", "AllImportItemlist=" +ImportData. AllImportItemlist.size());
+                                        mydatabase.itemsDao().deleteAll();
+                                        mydatabase.itemsDao().addAll(ImportData.AllImportItemlist);
+                                        mydatabase.itemUnitsDao().addAll(rs.getAllUnits());
+                                        mydatabase.itemsBalanceDao().addAll(rs.getAllBalance());
 
-                                                Items item = new Items();
-                                                item.setNAME(itemsArray.getJSONObject(i).getString("NAME"));
-                                                item.setBARCODE(itemsArray.getJSONObject(i).getString("BARCODE"));
-                                                item.setITEMNO(itemsArray.getJSONObject(i).getString("ITEMNO"));
+                                        getCustomerData();
+                                        pDialog.dismissWithAnimation();
+                                    }
+                                }
 
-                                                item.setItemK(itemsArray.getJSONObject(i).getString("ItemK"));
-                                                item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));
-                                                item.setCATEOGRYID(itemsArray.getJSONObject(i).getString("CATEOGRYID"));
-
-                                                item.setTAXPERC(Double.parseDouble(itemsArray.getJSONObject(i).getString("TAXPERC")) / 100);
-                                                item.setQty(1);
-
-                                                ImportData.AllImportItemlist.add(item);
-
-                                            }
-
-                                            mydatabase.itemsDao().addAll(ImportData.AllImportItemlist);
-
-                                            JSONArray unitsArray = response.getJSONArray("Item_Unit_Details2");
-
-                                            for (int i = 0; i < unitsArray.length(); i++) {
-//[{"ITEMU":"كرتونة","ITEMOCODE":"6294003583712","ITEMBARCODE":"6294003583729","CALCQTY":"12","SALEPRICE":"39","PCLASS1":"0","PCLASS2":"0","PCLASS3":"0"},
-                                                Item_Unit_Details itemUnitDetails = new Item_Unit_Details();
-                                            //    itemUnitDetails.setCompanyNo(unitsArray.getJSONObject(i).getString("COMAPNYNO"));
-                                                itemUnitDetails.setItemNo(unitsArray.getJSONObject(i).getString("ITEMOCODE"));
-                                                itemUnitDetails.setUnitId(unitsArray.getJSONObject(i).getString("ITEMU"));
-                                                itemUnitDetails.setConvRate(Double.parseDouble(unitsArray.getJSONObject(i).getString("CALCQTY")));
-                                                itemUnitDetails.setSALEPRICE(Double.parseDouble(unitsArray.getJSONObject(i).getString("SALEPRICE")));
-                                                itemUnitDetails.setITEMBARCODE(unitsArray.getJSONObject(i).getString("ITEMBARCODE"));
-
-                                                Log.e("ITEMBARCODE==",unitsArray.getJSONObject(i).getString("ITEMBARCODE"));
-                                                allUnitDetails.add(itemUnitDetails);
-
-                                            }
-
-                                            mydatabase.itemUnitsDao().addAll(allUnitDetails);
-                                            //
-                                            JSONArray unitsArray2 = response.getJSONArray("Item_Unit_Details");
-
-                                            for (int i = 0; i < unitsArray2.length(); i++) {
-                                                //[{"COMAPNYNO":"290","ITEMNO":"0006","UNITID":"كرتونة","CONVRATE":"1"}
-                                                Item_Unit_Details itemUnitDetails = new Item_Unit_Details();
-                                                //    itemUnitDetails.setCompanyNo(unitsArray.getJSONObject(i).getString("COMAPNYNO"));
-                                                itemUnitDetails.setItemNo(unitsArray2.getJSONObject(i).getString("ITEMNO"));
-                                                itemUnitDetails.setUnitId(unitsArray2.getJSONObject(i).getString("UNITID"));
-                                                itemUnitDetails.setConvRate(Double.parseDouble(unitsArray2.getJSONObject(i).getString("CONVRATE")));
-                                                itemUnitDetails.setSALEPRICE(1);
-                                                itemUnitDetails.setITEMBARCODE("");
-
-                                                allUnitDetails2.add(itemUnitDetails);
-                                            }
-                                            mydatabase.itemUnitsDao().addAll(allUnitDetails2);
-
-                                            try {
-                                                JSONArray BalanceitemsArray = response.getJSONArray("SalesMan_Items_Balance");
-
-                                                for (int i = 0; i < BalanceitemsArray.length(); i++) {
-                                                    ItemsBalance itemsBalance = new ItemsBalance();
-
-                                                    itemsBalance.setCOMAPNYNO(BalanceitemsArray.getJSONObject(i).getString("COMAPNYNO"));
-                                                    itemsBalance.setQTY(BalanceitemsArray.getJSONObject(i).getString("QTY"));
-                                                    itemsBalance.setItemOCode(BalanceitemsArray.getJSONObject(i).getString("ItemOCode"));
-                                                    itemsBalance.setSTOCK_CODE(BalanceitemsArray.getJSONObject(i).getString("STOCK_CODE"));
-
-                                                    listAlItemsBalances.add(itemsBalance);
-                                                }
-                                                Log.e("listAlItemsBalances===",listAlItemsBalances.size()+"");
-                                                mydatabase.itemsBalanceDao().addAll(listAlItemsBalances);
-
-
-                                            }catch (Exception e)
-                                            {
-                                                Log.e("Exception===",e.getMessage()+"");
-                                            }
-
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-
-
-                                        importData.getAllCustomers(new ImportData.GetCustomersCallBack() {
-                                            @Override
-                                            public void onResponse(JSONArray response) {
-
-                                                for (int i = 0; i < response.length(); i++) {
-
-                                                    try {
-
-                                                        allCustomers.add(new CustomerInfo(
-                                                                response.getJSONObject(i).getString("CUSTID"),
-                                                                response.getJSONObject(i).getString("CUSTNAME"),
-                                                                response.getJSONObject(i).getString("MOBILE"),
-                                                                1,0));
-
-                                                    } catch (JSONException e) {
-                                                        e.printStackTrace();
-                                                    }
-
-                                                }
-
-                                                mydatabase.customers_dao().addAll(allCustomers);
-
-                                                importData.getAllUsers(new ImportData.GetUsersCallBack() {
-                                                    @Override
-                                                    public void onResponse(JSONArray response) {
-
-
-                                                        for (int i = 0; i < response.length(); i++) {
-
-                                                            try {
-                                                                         if(!response.getJSONObject(i).getString("USERTYPE").equals(""))
-                                                                allUsers.add(new User(
-                                                                        response.getJSONObject(i).getString("SALESNO"),
-                                                                        response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
-                                                                        response.getJSONObject(i).getString("USER_PASSWORD"),
-                                                                        Integer.parseInt(response.getJSONObject(i).getString("USERTYPE")),
-                                                                        Integer.parseInt("1"),
-                                                                        1));
-                                                                         else
-                                                                             allUsers.add(new User(
-                                                                                     response.getJSONObject(i).getString("SALESNO"),
-                                                                                     response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
-                                                                                     response.getJSONObject(i).getString("USER_PASSWORD"),
-                                                                                     Integer.parseInt("0"),
-                                                                                     Integer.parseInt("1"),
-                                                                                     1));
-
-                                                            } catch (JSONException e) {
-                                                                e.printStackTrace();
-                                                            }
-
-                                                        }
-
-                                                        mydatabase.usersDao().addAll(allUsers);
-
-                                                        importData.getAllVendor(new ImportData.GetUsersCallBack() {
-                                                            @Override
-                                                            public void onResponse(JSONArray response) {
-
-
-                                                                for (int i = 0; i < response.length(); i++) {
-
-                                                                    try {
-                                                                        CustomerInfo vendourInfo = new CustomerInfo();
-                                                                        vendourInfo.setCustomerName( response.getJSONObject(i).getString("AccNameA"));
-                                                                        vendourInfo.setCustomerId( response.getJSONObject(i).getString("AccCode"));
-                                                                        vendourInfo.setIsVendor(1);
-                                                                        // vendourInfo.setSelect(0);
-                                                                        listAllVendor.add(vendourInfo);
-
+                                @Override
+                                public void onFailure(Call<Items.ItemsResult> call, Throwable throwable) {
+                                    Log.e("onFailure", "=" + throwable.getMessage());
+                                    pDialog.dismissWithAnimation();
+                                }
+                            });
+//                                importData.getAllItems(new ImportData.GetItemsCallBack() {
+//                                    @Override
+//                                    public void onResponse(JSONObject response) {
 //
-
-                                                                    } catch (JSONException e) {
-                                                                        e.printStackTrace();
-                                                                    }
-
-                                                                }
-                                                                mydatabase.customers_dao().addAll(listAllVendor);
-//                                                                importData.getItemsBalance(new ImportData.GetItemsBalanceCallBack() {
-//                                                                    @Override
-//                                                                    public void onResponse(JSONObject response) {
-//                                                                        try {
-//                                                                            JSONArray itemsArray = response.getJSONArray("SalesMan_Items_Balance");
+//                                        try {
+//                                            Log.e("getAllItems",""+response.length());
+//                                           // response.toString().getBytes(StandardCharsets.UTF_8);
+//                                            JSONArray itemsArray = response.getJSONArray("Items_Master");
 //
-//                                                                            for (int i = 0; i < itemsArray.length(); i++) {
-//                                                                                ItemsBalance itemsBalance = new ItemsBalance();
+//                                            for (int i = 0; i < itemsArray.length(); i++) {
 //
-//                                                                                itemsBalance.setCOMAPNYNO(itemsArray.getJSONObject(i).getString("COMAPNYNO"));
-//                                                                                itemsBalance.setQTY(itemsArray.getJSONObject(i).getString("QTY"));
-//                                                                                itemsBalance.setItemOCode(itemsArray.getJSONObject(i).getString("ItemOCode"));
-//                                                                                itemsBalance.setSTOCK_CODE(itemsArray.getJSONObject(i).getString("STOCK_CODE"));
+//                                                Items item = new Items();
+//                                                item.setNAME(itemsArray.getJSONObject(i).getString("NAME"));
+//                                                item.setBARCODE(itemsArray.getJSONObject(i).getString("BARCODE"));
+//                                                item.setITEMNO(itemsArray.getJSONObject(i).getString("ITEMNO"));
 //
-//                                                                                listAlItemsBalances.add(itemsBalance);
-//                                                                            }
-//                                                                            Log.e("listAlItemsBalances===",listAlItemsBalances.size()+"");
-//                                                                            mydatabase.itemsBalanceDao().addAll(listAlItemsBalances);
-//                                                                          //  ImportData importData=new ImportData(Login.this);
-//                                                                       importData. fetchItemSwitchData("01/01/2020","01/12/2040");
+//                                                item.setItemK(itemsArray.getJSONObject(i).getString("ItemK"));
+//                                                item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));
+//                                                item.setCATEOGRYID(itemsArray.getJSONObject(i).getString("CATEOGRYID"));
 //
-//                                                                        }catch (Exception e)
-//                                                                        {
-//                                                                            Log.e("Exception===",e.getMessage()+"");
-//                                                                        }
+//                                                item.setTAXPERC(Double.parseDouble(itemsArray.getJSONObject(i).getString("TAXPERC")) / 100);
+//                                                item.setQty(1);
+//
+//                                                ImportData.AllImportItemlist.add(item);
+//
+//                                            }
+//
+//                                            mydatabase.itemsDao().addAll(ImportData.AllImportItemlist);
+//
+//
+//
+//                                            JSONArray unitsArray = response.getJSONArray("Item_Unit_Details2");
+//
+//                                            for (int i = 0; i < unitsArray.length(); i++) {
+////[{"ITEMU":"كرتونة","ITEMOCODE":"6294003583712","ITEMBARCODE":"6294003583729","CALCQTY":"12","SALEPRICE":"39","PCLASS1":"0","PCLASS2":"0","PCLASS3":"0"},
+//                                                Item_Unit_Details itemUnitDetails = new Item_Unit_Details();
+//                                            //    itemUnitDetails.setCompanyNo(unitsArray.getJSONObject(i).getString("COMAPNYNO"));
+//                                                itemUnitDetails.setItemNo(unitsArray.getJSONObject(i).getString("ITEMOCODE"));
+//                                                itemUnitDetails.setUnitId(unitsArray.getJSONObject(i).getString("ITEMU"));
+//                                                itemUnitDetails.setConvRate(Double.parseDouble(unitsArray.getJSONObject(i).getString("CALCQTY")));
+//                                                itemUnitDetails.setSALEPRICE(Double.parseDouble(unitsArray.getJSONObject(i).getString("SALEPRICE")));
+//                                                itemUnitDetails.setITEMBARCODE(unitsArray.getJSONObject(i).getString("ITEMBARCODE"));
+//
+//                                                Log.e("ITEMBARCODE==",unitsArray.getJSONObject(i).getString("ITEMBARCODE"));
+//                                                allUnitDetails.add(itemUnitDetails);
+//
+//                                            }
+//
+//                                            mydatabase.itemUnitsDao().addAll(allUnitDetails);
+//                                            //
+//                                            JSONArray unitsArray2 = response.getJSONArray("Item_Unit_Details");
+//
+//                                            for (int i = 0; i < unitsArray2.length(); i++) {
+//                                                //[{"COMAPNYNO":"290","ITEMNO":"0006","UNITID":"كرتونة","CONVRATE":"1"}
+//                                                Item_Unit_Details itemUnitDetails = new Item_Unit_Details();
+//                                                //    itemUnitDetails.setCompanyNo(unitsArray.getJSONObject(i).getString("COMAPNYNO"));
+//                                                itemUnitDetails.setItemNo(unitsArray2.getJSONObject(i).getString("ITEMNO"));
+//                                                itemUnitDetails.setUnitId(unitsArray2.getJSONObject(i).getString("UNITID"));
+//                                                itemUnitDetails.setConvRate(Double.parseDouble(unitsArray2.getJSONObject(i).getString("CONVRATE")));
+//                                                itemUnitDetails.setSALEPRICE(1);
+//                                                itemUnitDetails.setITEMBARCODE("");
+//
+//                                                allUnitDetails2.add(itemUnitDetails);
+//                                            }
+//                                            mydatabase.itemUnitsDao().addAll(allUnitDetails2);
+//
+//                                            try {
+//                                                JSONArray BalanceitemsArray = response.getJSONArray("SalesMan_Items_Balance");
+//
+//                                                for (int i = 0; i < BalanceitemsArray.length(); i++) {
+//                                                    ItemsBalance itemsBalance = new ItemsBalance();
+//
+//                                                    itemsBalance.setCOMAPNYNO(BalanceitemsArray.getJSONObject(i).getString("COMAPNYNO"));
+//                                                    itemsBalance.setQTY(BalanceitemsArray.getJSONObject(i).getString("QTY"));
+//                                                    itemsBalance.setItemOCode(BalanceitemsArray.getJSONObject(i).getString("ItemOCode"));
+//                                                    itemsBalance.setSTOCK_CODE(BalanceitemsArray.getJSONObject(i).getString("STOCK_CODE"));
+//
+//                                                    listAlItemsBalances.add(itemsBalance);
+//                                                }
+//                                                Log.e("listAlItemsBalances===",listAlItemsBalances.size()+"");
+//                                                mydatabase.itemsBalanceDao().addAll(listAlItemsBalances);
+//
+//
+//                                            }catch (Exception e)
+//                                            {
+//                                                Log.e("Exception===",e.getMessage()+"");
+//                                            }
+//
+//                                        } catch (JSONException e) {
+//                                            e.printStackTrace();
+//                                            Log.e("printStackTrace","966"+e.getMessage());
+//                                        }
+//
+//
+//                                        importData.getAllCustomers(new ImportData.GetCustomersCallBack() {
+//                                            @Override
+//                                            public void onResponse(JSONArray response) {
+//
+//                                                for (int i = 0; i < response.length(); i++) {
+//
+//                                                    try {
+//
+//                                                        allCustomers.add(new CustomerInfo(
+//                                                                response.getJSONObject(i).getString("CUSTID"),
+//                                                                response.getJSONObject(i).getString("CUSTNAME"),
+//                                                                response.getJSONObject(i).getString("MOBILE"),
+//                                                                1,0));
+//
+//                                                    } catch (JSONException e) {
+//                                                        e.printStackTrace();
+//                                                    }
+//
+//                                                }
+//
+//                                                mydatabase.customers_dao().addAll(allCustomers);
+//
+//                                                importData.getAllUsers(new ImportData.GetUsersCallBack() {
+//                                                    @Override
+//                                                    public void onResponse(JSONArray response) {
+//
+//
+//                                                        for (int i = 0; i < response.length(); i++) {
+//
+//                                                            try {
+//                                                                         if(!response.getJSONObject(i).getString("USERTYPE").equals(""))
+//                                                                allUsers.add(new User(
+//                                                                        response.getJSONObject(i).getString("SALESNO"),
+//                                                                        response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
+//                                                                        response.getJSONObject(i).getString("USER_PASSWORD"),
+//                                                                        Integer.parseInt(response.getJSONObject(i).getString("USERTYPE")),
+//                                                                        Integer.parseInt("1"),
+//                                                                        1));
+//                                                                         else
+//                                                                             allUsers.add(new User(
+//                                                                                     response.getJSONObject(i).getString("SALESNO"),
+//                                                                                     response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
+//                                                                                     response.getJSONObject(i).getString("USER_PASSWORD"),
+//                                                                                     Integer.parseInt("0"),
+//                                                                                     Integer.parseInt("1"),
+//                                                                                     1));
+//
+//                                                            } catch (JSONException e) {
+//                                                                e.printStackTrace();
+//                                                            }
+//
+//                                                        }
+//
+//                                                        mydatabase.usersDao().addAll(allUsers);
+//
+//                                                        importData.getAllVendor(new ImportData.GetUsersCallBack() {
+//                                                            @Override
+//                                                            public void onResponse(JSONArray response) {
+//
+//
+//                                                                for (int i = 0; i < response.length(); i++) {
+//
+//                                                                    try {
+//                                                                        CustomerInfo vendourInfo = new CustomerInfo();
+//                                                                        vendourInfo.setCustomerName( response.getJSONObject(i).getString("AccNameA"));
+//                                                                        vendourInfo.setCustomerId( response.getJSONObject(i).getString("AccCode"));
+//                                                                        vendourInfo.setIsVendor(1);
+//                                                                        // vendourInfo.setSelect(0);
+//                                                                        listAllVendor.add(vendourInfo);
 //
 ////
+//
+//                                                                    } catch (JSONException e) {
+//                                                                        e.printStackTrace();
 //                                                                    }
 //
-//                                                                    @Override
-//                                                                    public void onError(String error) {
+//                                                                }
+//                                                                mydatabase.customers_dao().addAll(listAllVendor);
+////                                                                importData.getItemsBalance(new ImportData.GetItemsBalanceCallBack() {
+////                                                                    @Override
+////                                                                    public void onResponse(JSONObject response) {
+////                                                                        try {
+////                                                                            JSONArray itemsArray = response.getJSONArray("SalesMan_Items_Balance");
+////
+////                                                                            for (int i = 0; i < itemsArray.length(); i++) {
+////                                                                                ItemsBalance itemsBalance = new ItemsBalance();
+////
+////                                                                                itemsBalance.setCOMAPNYNO(itemsArray.getJSONObject(i).getString("COMAPNYNO"));
+////                                                                                itemsBalance.setQTY(itemsArray.getJSONObject(i).getString("QTY"));
+////                                                                                itemsBalance.setItemOCode(itemsArray.getJSONObject(i).getString("ItemOCode"));
+////                                                                                itemsBalance.setSTOCK_CODE(itemsArray.getJSONObject(i).getString("STOCK_CODE"));
+////
+////                                                                                listAlItemsBalances.add(itemsBalance);
+////                                                                            }
+////                                                                            Log.e("listAlItemsBalances===",listAlItemsBalances.size()+"");
+////                                                                            mydatabase.itemsBalanceDao().addAll(listAlItemsBalances);
+////                                                                          //  ImportData importData=new ImportData(Login.this);
+////                                                                       importData. fetchItemSwitchData("01/01/2020","01/12/2040");
+////
+////                                                                        }catch (Exception e)
+////                                                                        {
+////                                                                            Log.e("Exception===",e.getMessage()+"");
+////                                                                        }
+////
+//////
+////                                                                    }
+////
+////                                                                    @Override
+////                                                                    public void onError(String error) {
+////
+////                                                                    }
+////                                                                });
+//                                                                ImportData importData=new ImportData(Login.this);
+//                                                                importData. fetchItemSwitchData("01/01/2020","01/12/2040");
 //
-//                                                                    }
-//                                                                });
-                                                                ImportData importData=new ImportData(Login.this);
-                                                                importData. fetchItemSwitchData("01/01/2020","01/12/2040");
-
-                                                            }
-
-                                                            @Override
-                                                            public void onError(String error) {
-
-
-                                                            }
-                                                        }, ipAddress, ipPort, coNo);
-                                                    }
-
-                                                    @Override
-                                                    public void onError(String error) {
-
-
-                                                    }
-                                                }, ipAddress, ipPort, coNo);
-
-
-
-
-                                            }
-
-                                            @Override
-                                            public void onError(String error) {
-
-                                                if (!((error + "").contains("SSLHandshakeException") || (error + "").equals("null") ||
-                                                        (error + "").contains("ConnectException") || (error + "").contains("NoRouteToHostException"))) {
-
-                                                }
-
-
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onError(String error) {
-                                                    Log.e("onError",error+"");
-                                        if (!((error + "").contains("SSLHandshakeException") || (error + "").equals("null") ||
-                                                (error + "").contains("ConnectException") || (error + "").contains("NoRouteToHostException"))) {
-
-
-                                        }
-
-                                    }
-                                });
+//                                                            }
+//
+//                                                            @Override
+//                                                            public void onError(String error) {
+//
+//
+//                                                            }
+//                                                        }, ipAddress, ipPort, coNo);
+//                                                    }
+//
+//                                                    @Override
+//                                                    public void onError(String error) {
+//
+//
+//                                                    }
+//                                                }, ipAddress, ipPort, coNo);
+//
+//
+//
+//
+//                                            }
+//
+//                                            @Override
+//                                            public void onError(String error) {
+//
+//                                                if (!((error + "").contains("SSLHandshakeException") || (error + "").equals("null") ||
+//                                                        (error + "").contains("ConnectException") || (error + "").contains("NoRouteToHostException"))) {
+//
+//                                                }
+//
+//
+//                                            }
+//                                        });
+//                                    }
+//
+//                                    @Override
+//                                    public void onError(String error) {
+//                                                    Log.e("onError",error+"");
+//                                        if (!((error + "").contains("SSLHandshakeException") || (error + "").equals("null") ||
+//                                                (error + "").contains("ConnectException") || (error + "").contains("NoRouteToHostException"))) {
+//
+//
+//                                        }
+//
+//                                    }
+//                                });
 
 
 
@@ -791,6 +848,9 @@ public class Login extends AppCompatActivity {
 
             }
         });
+
+
+
 //        okBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -1123,6 +1183,130 @@ public class Login extends AppCompatActivity {
 //        });
 
     }
+
+    private void getCustomerData() {
+        importData.getAllCustomers(new ImportData.GetCustomersCallBack() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                for (int i = 0; i < response.length(); i++) {
+
+                    try {
+
+                        allCustomers.add(new CustomerInfo(
+                                response.getJSONObject(i).getString("CUSTID"),
+                                response.getJSONObject(i).getString("CUSTNAME"),
+                                response.getJSONObject(i).getString("MOBILE"),
+                                1,0));
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+                mydatabase.customers_dao().addAll(allCustomers);
+
+                importData.getAllUsers(new ImportData.GetUsersCallBack() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+
+
+                        for (int i = 0; i < response.length(); i++) {
+
+                            try {
+                                if(!response.getJSONObject(i).getString("USERTYPE").equals(""))
+                                    allUsers.add(new User(
+                                            response.getJSONObject(i).getString("SALESNO"),
+                                            response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
+                                            response.getJSONObject(i).getString("USER_PASSWORD"),
+                                            Integer.parseInt(response.getJSONObject(i).getString("USERTYPE")),
+                                            Integer.parseInt("1"),
+                                            1));
+                                else
+                                    allUsers.add(new User(
+                                            response.getJSONObject(i).getString("SALESNO"),
+                                            response.getJSONObject(i).getString("ACCNAME").toLowerCase(Locale.ROOT),
+                                            response.getJSONObject(i).getString("USER_PASSWORD"),
+                                            Integer.parseInt("0"),
+                                            Integer.parseInt("1"),
+                                            1));
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                        mydatabase.usersDao().addAll(allUsers);
+
+                        importData.getAllVendor(new ImportData.GetUsersCallBack() {
+                            @Override
+                            public void onResponse(JSONArray response) {
+
+
+                                for (int i = 0; i < response.length(); i++) {
+
+                                    try {
+                                        CustomerInfo vendourInfo = new CustomerInfo();
+                                        vendourInfo.setCustomerName( response.getJSONObject(i).getString("AccNameA"));
+                                        vendourInfo.setCustomerId( response.getJSONObject(i).getString("AccCode"));
+                                        vendourInfo.setIsVendor(1);
+                                        // vendourInfo.setSelect(0);
+                                        listAllVendor.add(vendourInfo);
+
+//
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                                mydatabase.customers_dao().addAll(listAllVendor);
+                                Log.e("customers_dao","LAST===listAllVendor"+listAllVendor.size());
+
+//
+                            ImportData importData=new ImportData(Login.this);
+                            importData. fetchItemSwitchData("01/01/2020","01/12/2040");
+
+    }
+
+    @Override
+    public void onError(String error) {
+
+
+    }
+}, ipAddress, ipPort, coNo);
+        }
+
+@Override
+public void onError(String error) {
+
+
+        }
+        }, ipAddress, ipPort, coNo);
+
+
+
+
+        }
+
+@Override
+public void onError(String error) {
+
+        if (!((error + "").contains("SSLHandshakeException") || (error + "").equals("null") ||
+        (error + "").contains("ConnectException") || (error + "").contains("NoRouteToHostException"))) {
+
+        }
+
+
+        }
+        });
+        }
+
+
+
+
     void checkUnameAndPass() {
 
         String uname = unameEdt.getText().toString().trim().toLowerCase(Locale.ROOT) + "";

@@ -23,7 +23,7 @@ import com.hiaryabeer.receiptapp.Interfaces.ReceiptDetails_Dao;
 import com.hiaryabeer.receiptapp.Interfaces.ReceiptMaster_Dao;
 import com.hiaryabeer.receiptapp.Interfaces.Users_Dao;
 
-@Database(entities = {Items.class,ReceiptMaster.class,ReceiptDetails.class,Item_Unit_Details.class,CustomerInfo.class,User.class,ItemsBalance.class,ItemSwitch.class,MaxVoucher.class}, version =28)
+@Database(entities = {Items.class,ReceiptMaster.class,ReceiptDetails.class,Item_Unit_Details.class,CustomerInfo.class,User.class,ItemsBalance.class,ItemSwitch.class,MaxVoucher.class}, version =29)
 
 public abstract class AppDatabase extends RoomDatabase {
     public abstract Items_Dao itemsDao();

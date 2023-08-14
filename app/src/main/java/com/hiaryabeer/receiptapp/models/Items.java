@@ -12,8 +12,11 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 import java.lang.reflect.Type;
+import java.util.List;
 
 @Entity(tableName = "Items_Table")
 public class Items{
@@ -37,8 +40,8 @@ public class Items{
     private String CATEOGRYID;
   @ColumnInfo(name = "TAXPERC")
     private double     TAXPERC;
-  @ColumnInfo(name = "qty")
-  private double     Qty;
+  @ColumnInfo(name = "qty",defaultValue = "1")
+  private double     Qty=1;
   @ColumnInfo(name = "amount")
   private double amount;
   @ColumnInfo(name = "Free")
@@ -256,5 +259,82 @@ public class Items{
       }
       return item ;
     }
+  }
+
+
+
+   public  class ItemsResult {
+
+//    @SerializedName("Items_Master")
+//    private List<ItemsValue> allItems;
+//
+//    public List<ItemsValue> getAllItems() {
+//      return allItems;
+//    }
+
+     @SerializedName("Items_Master")
+     private List<Items> allItems;
+
+     public List<Items> getAllItems() {
+       return allItems;
+     }
+
+     @SerializedName("Item_Unit_Details")
+     private List<Item_Unit_Details> allUnit;
+
+     public List<Item_Unit_Details> getAllUnits() {
+       return allUnit;
+     }
+     @SerializedName("SalesMan_Items_Balance")
+     private List<ItemsBalance> allBalance;
+
+     public List<ItemsBalance> getAllBalance() {
+       return allBalance;
+     }
+
+     @SerializedName("item_swich")
+     private List<ItemSwitch> allSwitch;
+
+     public List<ItemSwitch> getAllswitch() {
+       return allSwitch;
+     }
+
+
+
+
+
+  }
+
+  class ItemsValue{
+
+
+    @SerializedName("NAME")
+    @Expose
+    private String NAME;
+
+    @SerializedName("BARCODE")
+    @Expose
+    private String BARCODE;
+
+    @SerializedName("ITEMNO")
+    @Expose
+    private String ITEMNO;
+
+    @SerializedName("ItemK")
+    @Expose
+    private String ItemK;
+
+    @SerializedName("F_D")
+    @Expose
+    private String F_D;
+
+    @SerializedName("CATEOGRYID")
+    @Expose
+    private String CATEOGRYID;
+
+    @SerializedName("TAXPERC")
+    @Expose
+    private String TAXPERC;
+
   }
 }

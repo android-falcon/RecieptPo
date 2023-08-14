@@ -21,7 +21,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
  @GET("GetVanAllData")
- Call <Items> gatItemInfoDetail(@Query("STRNO") String STRNO, @Query("CONO") String ComNo);
+ Call<Items.ItemsResult> gatItemInfoDetail(@Query("STRNO") String STRNO, @Query("CONO") String ComNo);
 
 
 

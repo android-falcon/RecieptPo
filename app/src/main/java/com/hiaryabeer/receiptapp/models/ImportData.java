@@ -31,6 +31,7 @@ import retrofit2.Retrofit;
 
 import static android.content.Context.MODE_PRIVATE;
 import static com.hiaryabeer.receiptapp.Acitvits.Login.SETTINGS_PREFERENCES;
+import static com.hiaryabeer.receiptapp.Acitvits.Login.allUnitDetails;
 
 public class ImportData {
    public static List<Items> AllImportItemlist = new ArrayList<>();
@@ -66,6 +67,51 @@ AppDatabase my_dataBase;
 
       }
 
+   }
+   public void fetchCallData() {
+      pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+
+      pDialog.getProgressHelper().setBarColor(Color.parseColor("#115571"));
+      pDialog.setTitleText("Loading ...");
+      pDialog.setCancelable(false);
+      pDialog.show();
+      Log.e("onResponse", "fetchCallData" );
+
+      Log.e("link",link+"");
+
+      Call<Items.ItemsResult> myData = apiService.gatItemInfoDetail("1","290");
+      Log.e("myData", "req" + myData.request());
+      Log.e("myData", "ex" + myData.isExecuted());
+      myData.enqueue(new Callback<Items.ItemsResult>() {
+         @Override
+         public void onResponse(Call<Items.ItemsResult>call, retrofit2.Response<Items.ItemsResult> response) {
+            if (!response.isSuccessful()) {
+               pDialog.dismissWithAnimation();
+               Log.e("onResponse", "not=" + response.message());
+            } else {
+               Items.ItemsResult rs = response.body();
+               Log.e("onResponse", "rs=" + rs.getAllItems().size());
+               Log.e("onResponse", "getAllUnits=" + rs.getAllUnits().size());
+//               item.setQty(1);
+               ImportData.AllImportItemlist.addAll(rs.getAllItems());
+               Log.e("onResponse", "AllImportItemlist=" + AllImportItemlist.size());
+               my_dataBase.itemsDao().deleteAll();
+               my_dataBase.itemsDao().addAll(ImportData.AllImportItemlist);
+
+               allUnitDetails.addAll(rs.getAllUnits());
+               my_dataBase.itemUnitsDao().addAll(rs.getAllUnits());
+//               ImportData.listAlItemsBalances.addAll(rs.getAllBalance());
+//               my_dataBase.itemsBalanceDao().addAll(rs.getAllBalance());
+               pDialog.dismissWithAnimation();
+            }
+         }
+
+         @Override
+         public void onFailure(Call<Items.ItemsResult> call, Throwable throwable) {
+            Log.e("onFailure", "=" + throwable.getMessage());
+            pDialog.dismissWithAnimation();
+         }
+      });
    }
    public void getAllItems2(){
       try {
@@ -103,9 +149,9 @@ AppDatabase my_dataBase;
                  .create();
 
 
-      Call<Items>  call = apiService.gatItemInfoDetail("1","295");
-      Log.e("myData", "" + call.request());
-      Log.e("myData", "" + call.isExecuted());
+//      Call<Items>  call = apiService.gatItemInfoDetail("1","295");
+//      Log.e("myData", "" + call.request());
+//      Log.e("myData", "" + call.isExecuted());
 //      call.enqueue(new Callback<Items>() {
 //         @Override
 //         public void onResponse(Call<Items> call, Response<Items> response) {
@@ -188,7 +234,7 @@ AppDatabase my_dataBase;
 
          @Override
          public void onResponse(JSONObject response) {
-
+            Log.e("onResponse", response.length() + "");
             getItemsCallBack.onResponse(response);
             pDialog.dismissWithAnimation();
 //                GeneralMethod.showSweetDialog(context, 1, "Items Saved", null);
@@ -198,6 +244,7 @@ AppDatabase my_dataBase;
       }, new Response.ErrorListener() {
          @Override
          public void onErrorResponse(VolleyError error) {
+            Log.e("getItems_Error", error.getMessage() + "");
 
             getItemsCallBack.onError(error.getMessage() + "");
             pDialog.dismissWithAnimation();
@@ -485,6 +532,12 @@ AppDatabase my_dataBase;
 
    }
    public void fetchItemSwitchData(String from,String to) {
+      pDialog = new SweetAlertDialog(context, SweetAlertDialog.PROGRESS_TYPE);
+
+      pDialog.getProgressHelper().setBarColor(Color.parseColor("#115571"));
+      pDialog.setTitleText("Loading ...");
+      pDialog.setCancelable(false);
+      pDialog.show();
       listAllItemSwitch.clear();
       Call<List<ItemSwitch>> myData = apiService.gatItemSwitchDetail(from, to,CONO);
 
@@ -494,12 +547,14 @@ AppDatabase my_dataBase;
          public void onResponse(Call<List<ItemSwitch>> call, retrofit2.Response<List<ItemSwitch>> response) {
 
             if (!response.isSuccessful()) {
+               pDialog.dismissWithAnimation();
 
                Log.e("fetchItemDetailDataonResponse", "not=" + response.message());
 
 
 
             } else {
+               pDialog.dismissWithAnimation();
                Log.e("fetchItemDetailDataonResponse", "onResponse=" + response.message());
 
 
@@ -515,7 +570,7 @@ AppDatabase my_dataBase;
          @Override
          public void onFailure(Call<List<ItemSwitch>> call, Throwable t) {
             Log.e("fetchItemDetailDataonFailure", "=" + t.getMessage());
-
+            pDialog.dismissWithAnimation();
          }
       });
    }

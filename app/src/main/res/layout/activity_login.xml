@@ -134,12 +134,13 @@
             />
 
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:text=" V. 29"
         android:gravity="center_vertical|bottom"
+        android:text=" V. 30"
         android:textColor="@color/purple_500"
-        android:textSize="17sp" />
+        android:textSize="20sp" />
 </RelativeLayout>
