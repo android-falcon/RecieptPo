@@ -87,4 +87,9 @@
     <string name="covrate">عدد الحبات بالوحدة</string>
 
     <string name="unit"> الوحدة</string>
+    <string name="Note"> ملاحظة</string>
+    <string name="VoucherType"> نوع الفاتورة </string>
+    <string name="last_price">اخر سعر للمادة </string>
+
+
 </resources>

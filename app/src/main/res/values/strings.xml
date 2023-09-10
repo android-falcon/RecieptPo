@@ -88,7 +88,11 @@
     <string name="itemexists6">Warning: This Item is already in This Voucher</string>
     <string name="covrate">  عدد الحبات بالوحدة</string>
 
-    <string name="unit"> UnitId</string>
+    <string name="unit">UnitId</string>
+    <string name="Note">Note</string>
+    <string name="VoucherType">Voucher Type</string>
+    <string name="last_price">Last Price For Item</string>
+
 
 
 </resources>

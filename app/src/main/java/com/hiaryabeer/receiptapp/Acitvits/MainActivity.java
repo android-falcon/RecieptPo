@@ -1,5 +1,6 @@
 package com.hiaryabeer.receiptapp.Acitvits;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -27,12 +28,15 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.appcompat.widget.AppCompatRadioButton;
@@ -41,6 +45,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.hiaryabeer.receiptapp.Adapters.ItemsAdapter;
 import com.hiaryabeer.receiptapp.Adapters.ItemsAdapterNew;
 import com.hiaryabeer.receiptapp.Adapters.OrderItemAdapter;
@@ -73,6 +79,7 @@ import java.util.Locale;
 import java.util.stream.Collectors;
 
 import cn.pedant.SweetAlert.SweetAlertDialog;
+import com.google.zxing.*;
 
 import static com.hiaryabeer.receiptapp.Acitvits.Login.SETTINGS_PREFERENCES;
 import static com.hiaryabeer.receiptapp.Acitvits.Login.coNo;
@@ -83,6 +90,9 @@ import static com.hiaryabeer.receiptapp.Acitvits.Login.listAllVendor;
 
 public class MainActivity extends
         AppCompatActivity {
+
+    TextView barCodTextTemp;
+    LinearLayout lastPriceLinear;
     public static double  TotalofRec=0;
     public static List<Items> AllItemstest = new ArrayList<>();
     public static List<Items> AllItemDBlist = new ArrayList<>();
@@ -98,9 +108,13 @@ public class MainActivity extends
     AppCompatButton Save,
             close;
 
+    TextView scanner;
+
     AppDatabase mydatabase;
+    ArrayAdapter arrCodepage;
+
     private AutoCompleteTextView customerTv;
-    public static TextView desRespon, search, itemname, itemprice, vlauoftotaldis, netsales,Total;
+    public static TextView desRespon, search, itemname, itemprice, vlauoftotaldis, netsales,Total,lastPriceText;
     public static Items item;
     int pos, num_items = 1;
     public long orderno, vohno,orderno1, vohno1,neworderno;
@@ -135,6 +149,10 @@ public class MainActivity extends
   ReceivePoViewModel  receivePoViewModel;
     public static  TextView covrate_show;
     String     cusno;
+    Spinner voucherType;
+    List<String>VouTypeList;
+    EditText note;
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -193,7 +211,7 @@ public class MainActivity extends
 
                               break;
                             case R.id.exportdata:
-                              exportData.exportSalesVoucherM("505");
+                              exportData.exportSalesVoucherM(""+VochType);
                                 break;
                             case R.id.Report:
 
@@ -266,6 +284,10 @@ public class MainActivity extends
 
     }
     public void init() {
+        note=findViewById(R.id.note);
+        lastPriceLinear=findViewById(R.id.lastPriceLinear);
+        lastPriceLinear.setVisibility(View.GONE);
+        lastPriceText=findViewById(R.id.lastPriceText);
         cus_num = findViewById(R.id.cus_num);
         importData = new ImportData(MainActivity.this);
         menu = findViewById(R.id.menuBtn);
@@ -291,6 +313,42 @@ public class MainActivity extends
                 if (!editable.toString().equals("")) {
                     FillLastRowCalculations();
                 }
+            }
+        });
+
+        voucherType=findViewById(R.id.voucherType);
+
+        VouTypeList=new ArrayList<>();
+        VouTypeList.add("فاتورة شراء");
+        VouTypeList.add(" سند اخراج");
+        VouTypeList.add(" فاتورة ارجاع");
+
+        arrCodepage = new ArrayAdapter<String>(MainActivity.this, R.layout.spinner_style, VouTypeList);
+        voucherType.setAdapter(arrCodepage);
+
+        voucherType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                switch (i){
+                    case 0:
+                        VochType=505
+                        ;
+                        break;
+                    case 1:
+                        VochType=502
+                        ;
+                        break;
+                    case 2:
+                        VochType=506
+                        ;
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -473,6 +531,16 @@ public class MainActivity extends
         Save = findViewById(R.id.save);
         close = findViewById(R.id.cancel_btn);
         itemqty.setEnabled(false);
+        SharedPreferences sharedPref = getSharedPreferences(SETTINGS_PREFERENCES, MODE_PRIVATE);
+
+        String lastP = sharedPref.getString(Login.LAST_PRICE, "");
+
+        if(lastP.equals("1")){
+            lastPriceLinear.setVisibility(View.VISIBLE);
+
+        }else {
+            lastPriceLinear.setVisibility(View.GONE);
+        }
         HorizontalScrollView horizontalScroll = findViewById(R.id.HorizontalScroll);
 //        horizontalScroll.setOnScrollChangeListener(new View.OnScrollChangeListener() {
 //            @Override
@@ -487,16 +555,29 @@ public class MainActivity extends
             public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
 
                 //  Log.e("actionId==", actionId+"KeyEvent=="+event.getAction());
-
                 if (actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT
                         || actionId == EditorInfo.IME_ACTION_SEARCH
                         || actionId == EditorInfo.IME_NULL) {
                     if ((!itemcode.getText().equals(""))) {
 
+                        lastPriceText.setText("");
                         covrate_show.setText(GetUnitName(itemcode.getText().toString().trim()));
                         Log.e("itemcode==", itemcode.getText().toString().trim());
                         item = mydatabase.itemsDao().getItembyCode(itemcode.getText().toString().trim());
+                        String lastP = sharedPref.getString(Login.LAST_PRICE, "");
 
+                        try {
+                            if (lastP.equals("1")) {
+                                lastPriceLinear.setVisibility(View.VISIBLE);
+                                String lastPS = getLastPrice(itemcode.getText().toString()) + "";
+                                lastPriceText.setText(lastPS + "");
+                                item.setLastPrice(lastPS + "");
+                            } else {
+                                lastPriceLinear.setVisibility(View.GONE);
+                            }
+                        }catch (Exception e){
+
+                        }
                         Log.e("itemcode==", item + "");
                         if (item != null) {
 
@@ -732,6 +813,20 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
 //                return false;
 //            }
 //        });
+
+
+        scanner=findViewById(R.id.scanner);
+        scanner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                readBarCode(itemcode);
+
+            }
+        });
+
+
+
         itemqty.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View view, int i, KeyEvent keyEvent) {
@@ -964,6 +1059,19 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
         });
     }
 
+    public  double getLastPrice(String code) {
+
+       List< ReceiptDetails >temp=mydatabase.receiptDetails_dao().getAllOrdersByCodeSerial(code);
+
+       if(temp.size()!=0){
+           return temp.get(0).getPrice();
+       }else {
+           return -1;
+       }
+
+
+    }
+
     public void fillCustomerspinner(List<CustomerInfo> customerInfoList) {
         // customerInfoList.clear();
         customerNames.clear();
@@ -1073,9 +1181,10 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
                                     cridt.setChecked(true);
                                     vocher.setChecked(true);
                                     cus_num.setText("");
+                                    lastPriceText.setText("");
 
 
-                      exportData.exportSalesVoucherM("505");
+                      exportData.exportSalesVoucherM(""+VochType);
                                     AllItemDBlist.clear();
 
 
@@ -1201,6 +1310,27 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
         fillAdapter();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        IntentResult Result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (Result != null) {
+            if (Result.getContents() == null) {
+                Log.d("MainActivity", "cancelled scan");
+//                Toast.makeText(this, "cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d("MainActivity", "Scanned");
+                Log.e("MainActivity", "Result.getContents()"+Result.getContents().toString());
+//
+                barCodTextTemp.setText(Result.getContents() + "");
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
     private boolean CheckIsExistsINLocalList(String barcode) {
     Log.e("covrate==",item.getConvRate()+"");
 
@@ -1282,6 +1412,7 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
                 itemqty.setEnabled(false);
                 itemcode.setText("");
                 itemcode.requestFocus();
+                lastPriceText.setText("");
                 itemqty.setError(null);
             }
 
@@ -1293,7 +1424,7 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-
+                lastPriceText.setText("");
                 itemname.setText("");
                 covrate_show.setText("");
                 itemqty.setText("");
@@ -1314,6 +1445,7 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
     }
 
 
+    @SuppressLint("LongLogTag")
     void SaveDetialsVocher() {
         Log.e("vocher_ItemsSize==", vocher_Items.size() + "");
         for (int i = 0; i < vocher_Items.size(); i++) {
@@ -1511,6 +1643,7 @@ Log.e("orderno===",neworderno+"");
             orderMaster.setVhfNo(orderno1);
 
            orderMaster.setNewVochNum(orderno1);
+           orderMaster.setNOTE(note.getText().toString());
             mydatabase.receiptMaster_dao().insertOrder(orderMaster);
 
             for (int l = 0; l < ordersDetailslist.size(); l++) {
@@ -2017,6 +2150,7 @@ Log.e("orderno===",neworderno+"");
                                 if ((!itemcode.getText().equals(""))) {
 
 
+
                                     Log.e("itemcode==", itemcode.getText().toString().trim());
                                     item = mydatabase.itemsDao().getItembyCode(itemcode.getText().toString().trim());
                                   List<Item_Unit_Details>   itemUnitDetails =   mydatabase.itemUnitsDao(). getItemUnitsOfItem(item.getITEMNO());
@@ -2451,6 +2585,25 @@ Log.e("orderno===",neworderno+"");
 
     }
 
+
+    public void readBarCode(EditText itemCodeText) {
+
+        barCodTextTemp = itemCodeText;
+        Log.e("barcode_099", "in");
+        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+        intentIntegrator.setDesiredBarcodeFormats(intentIntegrator.ALL_CODE_TYPES);
+        intentIntegrator.setBeepEnabled(false);
+        intentIntegrator.setCameraId(0);
+        intentIntegrator.setOrientationLocked(true);
+
+        intentIntegrator.setPrompt("SCAN");
+        intentIntegrator.setBarcodeImageEnabled(false);
+        intentIntegrator.initiateScan();
+
+
+    }
+
+    @SuppressLint("LongLogTag")
     void removeZeroQtyFromList() {
         Log.e("vocher_ItemssizeBeforremove==", vocher_Items.size() + "");
 
@@ -2514,6 +2667,7 @@ Log.e("orderno===",neworderno+"");
     protected void onResume() {
         super.onResume();
     }
+    @SuppressLint("LongLogTag")
     public List<Items> creatlistGraterZero(){
         ArrayList<Items> myList = new ArrayList<>();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -2583,6 +2737,7 @@ Log.e("orderno===",neworderno+"");
 
     }
 //
+@SuppressLint("LongLogTag")
 public ArrayList<Items> creatlistGraterZero(List<Items> items){
     ArrayList<Items> myList = new ArrayList<>();
     Log.e("creatlistGraterZero,items",items.size()+"");
@@ -2641,4 +2796,8 @@ public ArrayList<Items> creatlistGraterZero(List<Items> items){
         return name;
 
     }
+
+
+
+
 }

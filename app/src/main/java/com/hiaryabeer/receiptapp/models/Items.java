@@ -4,6 +4,7 @@ import android.util.Log;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.Gson;
@@ -77,6 +78,18 @@ public class Items{
   }
   @ColumnInfo(name = "UNITBARCODE")
   public String  UNITBARCODE;
+
+  @Ignore
+  public String lastPrice;
+
+
+  public String getLastPrice() {
+    return lastPrice;
+  }
+
+  public void setLastPrice(String lastPrice) {
+    this.lastPrice = lastPrice;
+  }
 
   public String getUNITBARCODE() {
     return UNITBARCODE;

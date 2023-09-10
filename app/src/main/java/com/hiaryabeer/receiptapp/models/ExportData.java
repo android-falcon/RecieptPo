@@ -1,5 +1,8 @@
 package com.hiaryabeer.receiptapp.models;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.hiaryabeer.receiptapp.Acitvits.Login.SETTINGS_PREFERENCES;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -9,17 +12,17 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.HttpResponse;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.NameValuePair;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.HttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.entity.UrlEncodedFormEntity;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.client.methods.HttpPost;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.impl.client.DefaultHttpClient;
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.http.message.BasicNameValuePair;
 import com.hiaryabeer.receiptapp.Acitvits.Login;
 import com.hiaryabeer.receiptapp.Interfaces.ApiService;
 import com.hiaryabeer.receiptapp.R;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,9 +46,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-
-import static android.content.Context.MODE_PRIVATE;
-import static com.hiaryabeer.receiptapp.Acitvits.Login.SETTINGS_PREFERENCES;
 
 public class ExportData {
     List<ReceiptDetails> items;

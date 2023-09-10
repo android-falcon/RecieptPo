@@ -29,6 +29,9 @@ public interface ReceiptDetails_Dao {
 
     @Query("SELECT * FROM ReceiptDetails_Table Where NewVochNum= :VHFNO and IS_Posted='0'")
     List<ReceiptDetails> getAllOrdersByNumber(int VHFNO );
+
+    @Query("SELECT * FROM ReceiptDetails_Table  Where Item_No= :itemCode order by Serial DESC  LIMIT 1")
+    List<ReceiptDetails> getAllOrdersByCodeSerial(String itemCode );
     @Insert
     void insertAllOrders(ReceiptDetails  receiptDetails);
     @Insert

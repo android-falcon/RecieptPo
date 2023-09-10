@@ -67,6 +67,9 @@ public class ReceiptMaster {
     @ColumnInfo(name = "Cust_Name")
     private String Cust_Name;
 
+    @ColumnInfo(name = "NOTE")
+    private String NOTE;
+
     public long getNewVochNum() {
         return NewVochNum;
     }
@@ -234,6 +237,14 @@ public class ReceiptMaster {
         this.VOUCHERTYPE = VOUCHERTYPE;
     }
 
+    public String getNOTE() {
+        return NOTE;
+    }
+
+    public void setNOTE(String NOTE) {
+        this.NOTE = NOTE;
+    }
+
     public JSONObject getJSONObjectDelphi() {
         JSONObject obj = new JSONObject();
         String voucherDateFormet="";
@@ -250,7 +261,7 @@ public class ReceiptMaster {
             obj.put("VOUCHERDISCOUNT", voucherDiscountvalue);
             obj.put("VOUCHERDISCOUNTPERCENT", voucherDiscountPerc);
 
-            obj.put("NOTES", UserNo);
+            obj.put("NOTES", NOTE);
 
 
             obj.put("CACR", Paymethod);
@@ -280,7 +291,7 @@ public class ReceiptMaster {
             obj.put("VOUCHERDISCOUNT", voucherDiscountvalue);
             obj.put("VOUCHERDISCOUNTPERCENT", voucherDiscountPerc);
 
-            obj.put("NOTES", UserNo);
+            obj.put("NOTES", NOTE);
 
 
             obj.put("CACR", Paymethod);

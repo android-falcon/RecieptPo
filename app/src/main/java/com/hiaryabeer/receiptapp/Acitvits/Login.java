@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -60,7 +61,9 @@ public class Login extends AppCompatActivity {
     public final static String CONO_PREF = "Company_No";
     public final static String maxVoch_PREF = "maxVoch";
     public final static String max_Order_PREF = "Ordermaxserial";
-   public static String  ipAddress, ipPort, coNo,Max_Voch,Max_Order;
+    public final static String LAST_PRICE = "LAST_PRICE";
+
+   public static String  ipAddress, ipPort, coNo,Max_Voch,Max_Order,lastPr;
     private TextInputEditText ipEdt, portEdt, coNoEdt,maxVochEdt,MaxOrderEdt;
     ImportData importData;
     public static List<Item_Unit_Details> allUnitDetails=new ArrayList<>();
@@ -156,6 +159,7 @@ public class Login extends AppCompatActivity {
         ip_settings_dialog.show();
         editVochNo= ip_settings_dialog.findViewById(R.id.editVochNo);
 
+        CheckBox lastPrice=ip_settings_dialog.findViewById(R.id.lastPrice);
     MaxVo= mydatabase.receiptMaster_dao(). getLastVoherNo();
     Maxorder= mydatabase.receiptMaster_dao(). getLastorderNo();
 
@@ -357,6 +361,8 @@ public class Login extends AppCompatActivity {
         coNoEdt.setText(sharedPref.getString(CONO_PREF, ""));
         maxVochEdt.setText(sharedPref.getString(maxVoch_PREF, ""));
         MaxOrderEdt.setText(sharedPref.getString(max_Order_PREF, ""));
+        lastPrice.setChecked(sharedPref.getString(LAST_PRICE, "").equals("1")?true:false);
+
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -468,6 +474,14 @@ public class Login extends AppCompatActivity {
                 String coNo1 = coNoEdt.getText().toString().trim();
                 String maxvo1 =maxVochEdt.getText().toString().trim();
                 String maxOrder =MaxOrderEdt.getText().toString().trim();
+                int lastPriceCh=0;
+                if(lastPrice.isChecked()){
+                    lastPriceCh=1;
+
+                }else {
+                    lastPriceCh=0;
+                }
+
                 if (maxvo1.equals(""))maxvo1="1";
                 if (!ipAddress1.equals("")) {
 
@@ -482,6 +496,7 @@ public class Login extends AppCompatActivity {
                                 editor.putString(IP_PREF, ipAddress1);
                                 editor.putString(PORT_PREF, port1);
                                 editor.putString(CONO_PREF, coNo1);
+                            editor.putString(LAST_PRICE, lastPriceCh+"");
 
                                 if(!maxOrder.equals(""))
                                     editor.putString(max_Order_PREF, maxOrder);
@@ -499,6 +514,7 @@ public class Login extends AppCompatActivity {
                                 coNo = sharedPref.getString(CONO_PREF, "");
                                 Max_Voch = sharedPref.getString(maxVoch_PREF, "");
                                 Max_Order = sharedPref.getString(max_Order_PREF, "");
+                            lastPr= sharedPref.getString(LAST_PRICE, "");
 
                                 ip_settings_dialog.dismiss();
                                 mydatabase.itemsDao().deleteAll();

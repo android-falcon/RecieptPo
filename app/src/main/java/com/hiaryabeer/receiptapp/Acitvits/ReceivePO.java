@@ -1,5 +1,6 @@
 package com.hiaryabeer.receiptapp.Acitvits;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -20,6 +21,8 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -27,6 +30,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -36,6 +40,8 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.hiaryabeer.receiptapp.Adapters.ItemsAdapterNew;
 import com.hiaryabeer.receiptapp.Adapters.SearchAdapter;
 import com.hiaryabeer.receiptapp.Adapters.SearchAdapterNew;
@@ -104,6 +110,8 @@ public class ReceivePO extends AppCompatActivity {
     public static TextView desRespon;
     String custNAME="",custNumber="";
     public static List<POitems> AllItemstest = new ArrayList<>();
+    TextView scanner,barCodTextTemp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -152,7 +160,8 @@ public class ReceivePO extends AppCompatActivity {
 
                                 break;
                             case R.id.exportdata:
-                          exportData.exportSalesVoucherM("504");
+                          exportData.exportSalesVoucherM(""+VochType); //يجب ان يتم حذف الكومينت
+                                Log.e("export V",""+VochType);
                                 break;
                             case R.id.Report:
 
@@ -210,9 +219,59 @@ public class ReceivePO extends AppCompatActivity {
             }
         });
     }
-   public void Init(){
+
+    public void readBarCode(EditText itemCodeText) {
+
+        barCodTextTemp = itemCodeText;
+        Log.e("barcode_099", "in");
+        IntentIntegrator intentIntegrator = new IntentIntegrator(ReceivePO.this);
+        intentIntegrator.setDesiredBarcodeFormats(intentIntegrator.ALL_CODE_TYPES);
+        intentIntegrator.setBeepEnabled(false);
+        intentIntegrator.setCameraId(0);
+        intentIntegrator.setOrientationLocked(true);
+
+        intentIntegrator.setPrompt("SCAN");
+        intentIntegrator.setBarcodeImageEnabled(false);
+        intentIntegrator.initiateScan();
+
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        IntentResult Result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (Result != null) {
+            if (Result.getContents() == null) {
+                Log.d("MainActivity", "cancelled scan");
+//                Toast.makeText(this, "cancelled", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
+            } else {
+                Log.d("MainActivity", "Scanned");
+                Log.e("MainActivity", "Result.getContents()"+Result.getContents().toString());
+//
+                barCodTextTemp.setText(Result.getContents() + "");
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+
+    public void Init(){
        binding.qty.setEnabled(false);
        Total= findViewById(R.id.Total);
+
+        //itemCode=findViewById(R.id.item_code);
+       scanner=findViewById(R.id.scanner);
+       scanner.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+
+               readBarCode( binding.itemCode);
+
+           }
+       });
        binding.PONO.setOnEditorActionListener(new TextView.OnEditorActionListener() {
            @Override
            public boolean onEditorAction(TextView textView, int actionId, KeyEvent event) {
@@ -948,8 +1007,10 @@ public class ReceivePO extends AppCompatActivity {
                                     binding.PONO.setText("");
                                     binding.PONO.requestFocus();
                                     binding.customerName.setText("");
-                                 exportData.exportSalesVoucherM("504");
-                                //    AllItemDBlist.clear();
+                                 exportData.exportSalesVoucherM(""+VochType);//يجب ان ترجع
+                                    Log.e("exportq V",""+VochType);
+
+                                    //    AllItemDBlist.clear();
 
 
 //                                    AllItemDBlist=    mydatabase.itemsDao().loadListLiveData();
@@ -1200,6 +1261,7 @@ public class ReceivePO extends AppCompatActivity {
         }
 
     }
+    @SuppressLint("LongLogTag")
     void removeZeroQtyFromList() {
         Log.e("vocher_ItemssizeBeforremove==", vocher_Items.size() + "");
 
@@ -1215,6 +1277,7 @@ public class ReceivePO extends AppCompatActivity {
 
     }
 
+    @SuppressLint("LongLogTag")
     void SaveDetialsVocher() {
         Log.e("vocher_ItemsSize==", vocher_Items.size() + "");
         for (int i = 0; i < vocher_Items.size(); i++) {
@@ -1336,6 +1399,7 @@ public class ReceivePO extends AppCompatActivity {
         //     orderMaster.setCustomerId(mydatabase.customers_dao().getCustmByName(Cus_selection) );
         orderMaster.setCustomerId(custNumber);
         orderMaster.setCust_Name(custNAME);
+        orderMaster.setNOTE(binding.note.getText().toString()+"");
 //        if (orderMaster.getVOUCHERTYPE() == 504) {
 //            orderMaster.setCustomerId(customerInfoList.get(Cus_pos).getCustomerId());
 //            Log.e("aaaaa(==", customerInfoList.get(Cus_pos).getCustomerId() + "");
@@ -2014,6 +2078,7 @@ public class ReceivePO extends AppCompatActivity {
 
 
     }
+    @SuppressLint("LongLogTag")
     public ArrayList<Items> creatlistGraterZero(List<Items> items){
 
         Log.e("creatlistGraterZero,items",items.size()+"");

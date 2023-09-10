@@ -86,7 +86,6 @@ public class OrderSearchAdapter extends RecyclerView.Adapter<OrderSearchAdapter.
                 MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
 
                 MainActivity.     free.setText("");
-
                 final Handler handler = new Handler();
                 handler.postDelayed(new Runnable() {
                     @Override
@@ -100,6 +99,14 @@ public class OrderSearchAdapter extends RecyclerView.Adapter<OrderSearchAdapter.
                         MainActivity.     covrate_show.setText(GetUnitName(   MainActivity.item.getITEMNO()));
                         MainActivity.    item.setConvRate("1");
                         String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(MainActivity.   item.getITEMNO(),MainActivity.itemcode.getText().toString().trim());
+                      try{
+                          MainActivity main=(MainActivity)context;
+                          MainActivity.lastPriceText.setText(main.getLastPrice( MainActivity.item.getITEMNO())+"");
+
+                      }catch (Exception e){
+
+                      }
+
 
                         MainActivity.      item.  setWhichUNITSTR(unitid);
                         //         addItem(item.getITEMNO());
