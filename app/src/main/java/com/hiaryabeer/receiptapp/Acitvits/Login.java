@@ -55,6 +55,7 @@ import retrofit2.Retrofit;
 public class Login extends AppCompatActivity {
  AppCompatButton LoginButton,OpenSetting;
     ImageView editVochNo,saveVochNo;
+    CheckBox PuPrice;
     public final static String SETTINGS_PREFERENCES = "SETTINGS_PREFERENCES";
     public final static String IP_PREF = "IP_Address";
     public final static String PORT_PREF = "IP_Port";
@@ -62,8 +63,9 @@ public class Login extends AppCompatActivity {
     public final static String maxVoch_PREF = "maxVoch";
     public final static String max_Order_PREF = "Ordermaxserial";
     public final static String LAST_PRICE = "LAST_PRICE";
+    public final static String PRU_PRICE = "PRU_PRICE";
 
-   public static String  ipAddress, ipPort, coNo,Max_Voch,Max_Order,lastPr;
+   public static String  ipAddress, ipPort, coNo,Max_Voch,Max_Order,lastPr,purPrice;
     private TextInputEditText ipEdt, portEdt, coNoEdt,maxVochEdt,MaxOrderEdt;
     ImportData importData;
     public static List<Item_Unit_Details> allUnitDetails=new ArrayList<>();
@@ -132,10 +134,12 @@ public class Login extends AppCompatActivity {
         coNo = sharedPref.getString(CONO_PREF, "");
         Max_Voch = sharedPref.getString(maxVoch_PREF, "");
         Max_Order  = sharedPref.getString(max_Order_PREF, "");
+        purPrice=sharedPref.getString(PRU_PRICE, "");
         Log.e("IP_PREF", ipAddress + "");
         Log.e("PORT_PREF", ipPort);
         Log.e("CONO_PREF", coNo);
         Log.e("Max_Voch",  Max_Voch);
+        Log.e("purPrice",  purPrice);
         return !(ipAddress + "").trim().equals("")
                 &&
                 !(coNo + "").trim().equals("");
@@ -157,11 +161,14 @@ public class Login extends AppCompatActivity {
         ip_settings_dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         ip_settings_dialog.show();
+        PuPrice=ip_settings_dialog.findViewById(R.id.PuPrice);
         editVochNo= ip_settings_dialog.findViewById(R.id.editVochNo);
 
         CheckBox lastPrice=ip_settings_dialog.findViewById(R.id.lastPrice);
     MaxVo= mydatabase.receiptMaster_dao(). getLastVoherNo();
     Maxorder= mydatabase.receiptMaster_dao(). getLastorderNo();
+
+
 
         Log.e("MaxVo==",MaxVo+""+"Maxorder=="+Maxorder);
 
@@ -362,7 +369,7 @@ public class Login extends AppCompatActivity {
         maxVochEdt.setText(sharedPref.getString(maxVoch_PREF, ""));
         MaxOrderEdt.setText(sharedPref.getString(max_Order_PREF, ""));
         lastPrice.setChecked(sharedPref.getString(LAST_PRICE, "").equals("1")?true:false);
-
+        PuPrice.setChecked(sharedPref.getString(PRU_PRICE,"").equals("1")?true:false);
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -474,7 +481,16 @@ public class Login extends AppCompatActivity {
                 String coNo1 = coNoEdt.getText().toString().trim();
                 String maxvo1 =maxVochEdt.getText().toString().trim();
                 String maxOrder =MaxOrderEdt.getText().toString().trim();
-                int lastPriceCh=0;
+                int lastPriceCh=0,pruPrice=0;
+
+                if(PuPrice.isChecked()){
+
+                    pruPrice=1;
+                }else{
+                    pruPrice=0;
+
+                }
+
                 if(lastPrice.isChecked()){
                     lastPriceCh=1;
 
@@ -497,6 +513,7 @@ public class Login extends AppCompatActivity {
                                 editor.putString(PORT_PREF, port1);
                                 editor.putString(CONO_PREF, coNo1);
                             editor.putString(LAST_PRICE, lastPriceCh+"");
+                            editor.putString(PRU_PRICE, pruPrice+"");
 
                                 if(!maxOrder.equals(""))
                                     editor.putString(max_Order_PREF, maxOrder);

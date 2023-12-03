@@ -65,6 +65,17 @@ public class Items{
   @ColumnInfo(name = "CALCQTY")
   public String CALCQTY;
 
+  @ColumnInfo(name = "LSPRICE",defaultValue = "0")
+  public String LSPRICE;
+
+  public String getLSPRICE() {
+    return LSPRICE;
+  }
+
+  public void setLSPRICE(String LSPRICE) {
+    this.LSPRICE = LSPRICE;
+  }
+
   public String getCALCQTY() {
     return CALCQTY;
   }

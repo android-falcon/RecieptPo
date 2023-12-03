@@ -87,6 +87,7 @@ import static com.hiaryabeer.receiptapp.Acitvits.Login.ipAddress;
 import static com.hiaryabeer.receiptapp.Acitvits.Login.ipPort;
 import static com.hiaryabeer.receiptapp.Acitvits.Login.listAlItemsBalances;
 import static com.hiaryabeer.receiptapp.Acitvits.Login.listAllVendor;
+import static com.hiaryabeer.receiptapp.Acitvits.Login.purPrice;
 
 public class MainActivity extends
         AppCompatActivity {
@@ -340,7 +341,7 @@ public class MainActivity extends
                         ;
                         break;
                     case 2:
-                        VochType=506
+                        VochType=507
                         ;
                         break;
                 }
@@ -606,10 +607,23 @@ public class MainActivity extends
                             if(num_items!=0)   item.setConvRate(num_items+"");
                              else   item.setConvRate("1");
 
-                            if (itemUnitDetails!=null)
-                                item.setF_D(itemUnitDetails.getSALEPRICE()/num_items);
-                            else
-                                item.setF_D(  item.getF_D());
+                             if(!purPrice.equals("1")) {
+                                 Log.e("purPrice1",""+purPrice);
+                                 if (itemUnitDetails != null)
+                                     item.setF_D(itemUnitDetails.getSALEPRICE() / num_items);
+                                 else
+                                     item.setF_D(item.getF_D());
+                             }else {
+                                 try {
+                                     item.setF_D(Double.parseDouble(item.getLSPRICE()));
+                                 }catch (Exception e){
+                                     item.setF_D(0.0);
+                                 }
+                                 Log.e("purPrice2",""+purPrice);
+
+                             }
+                            Log.e("purPrice3",""+item.getF_D());
+
 
                             Log.e("num_items==",item.getConvRate()+"");
                             String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getITEMNO(),itemcode.getText().toString().trim());
@@ -656,11 +670,20 @@ public class MainActivity extends
                           else
                               item.setConvRate("1");
 
-                            if (itemUnitDetails!=null)
-                                item.setF_D(itemUnitDetails.getSALEPRICE()/num_items);
-                            else
-                                item.setF_D(  item.getF_D());
+                          if(!purPrice.equals("1")) {
+                              if (itemUnitDetails != null)
+                                  item.setF_D(itemUnitDetails.getSALEPRICE() / num_items);
+                              else
+                                  item.setF_D(item.getF_D());
+                          }else{
+                              try{
+                                  item.setF_D(Double.parseDouble(item.getLSPRICE()));
 
+                              }catch (Exception e){
+                                  item.setF_D(0.0);
+
+                              }
+                          }
 
                             Log.e("num_items==", item.getConvRate()+"");
                             String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getITEMNO(),itemcode.getText().toString().trim());
@@ -718,11 +741,20 @@ String unitid= mydatabase.itemUnitsDao().getUnitidbyitemnumAndBarcode(item.getIT
                             if(num_items!=0)    item.setConvRate(num_items+"");
                             else
                                 item.setConvRate("1");
-                            if (itemUnitDetails!=null)
-                                item.setF_D(itemUnitDetails.getSALEPRICE()/num_items);
-                            else
-                                item.setF_D(  item.getF_D());
+                            if(!purPrice.equals("1")) {
+                                if (itemUnitDetails != null)
+                                    item.setF_D(itemUnitDetails.getSALEPRICE() / num_items);
+                                else
+                                    item.setF_D(item.getF_D());
+                            }else{
+                                try{
+                                    item.setF_D(Double.parseDouble(item.getLSPRICE()));
 
+                                }catch (Exception e){
+                                    item.setF_D(0.0);
+
+                                }
+                            }
 
                             item.  setWhichUNITSTR(unitid);
                             Log.e("num_items==", item.getConvRate()+"");
@@ -1726,9 +1758,18 @@ Log.e("orderno===",neworderno+"");
                             item.setNAME(itemsArray.getJSONObject(i).getString("NAME"));
                             item.setBARCODE(itemsArray.getJSONObject(i).getString("BARCODE"));
                             item.setITEMNO(itemsArray.getJSONObject(i).getString("ITEMNO"));
+                            item.setLSPRICE(itemsArray.getJSONObject(i).getString("LSPRICE"));
+
+                            if(purPrice.equals("1")){
+                                item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("LSPRICE")));
+
+                            }else{
+                                item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));
+
+                            }
 
                             item.setItemK(itemsArray.getJSONObject(i).getString("ItemK"));
-                            item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));
+//                            item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));
                             item.setCATEOGRYID(itemsArray.getJSONObject(i).getString("CATEOGRYID"));
 
                             item.setTAXPERC(Double.parseDouble(itemsArray.getJSONObject(i).getString("TAXPERC")) / 100);

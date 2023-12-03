@@ -1566,6 +1566,7 @@ public class ReceivePO extends AppCompatActivity {
                             item.setNAME(itemsArray.getJSONObject(i).getString("NAME"));
                             item.setBARCODE(itemsArray.getJSONObject(i).getString("BARCODE"));
                             item.setITEMNO(itemsArray.getJSONObject(i).getString("ITEMNO"));
+                            item.setLSPRICE(itemsArray.getJSONObject(i).getString("LSPRICE"));
 
                             item.setItemK(itemsArray.getJSONObject(i).getString("ItemK"));
                             item.setF_D(Double.parseDouble(itemsArray.getJSONObject(i).getString("F_D")));

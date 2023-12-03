@@ -23,7 +23,7 @@ import com.hiaryabeer.receiptapp.Interfaces.ReceiptDetails_Dao;
 import com.hiaryabeer.receiptapp.Interfaces.ReceiptMaster_Dao;
 import com.hiaryabeer.receiptapp.Interfaces.Users_Dao;
 
-@Database(entities = {Items.class,ReceiptMaster.class,ReceiptDetails.class,Item_Unit_Details.class,CustomerInfo.class,User.class,ItemsBalance.class,ItemSwitch.class,MaxVoucher.class}, version =31)
+@Database(entities = {Items.class,ReceiptMaster.class,ReceiptDetails.class,Item_Unit_Details.class,CustomerInfo.class,User.class,ItemsBalance.class,ItemSwitch.class,MaxVoucher.class}, version =32)
 
 public abstract class AppDatabase extends RoomDatabase {
     public abstract Items_Dao itemsDao();
@@ -238,13 +238,23 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_31_32 = new Migration(29, 30) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            database.execSQL("ALTER TABLE Items_Table ADD COLUMN LSPRICE TEXT ");
+
+
+
+        }
+    };
+
     public static synchronized AppDatabase getInstanceDatabase(Context context) {
 
         if (InstanceDatabase == null) {
 
             InstanceDatabase = Room.databaseBuilder(context, AppDatabase.class, DatabaseName)
                     .allowMainThreadQueries()
-                      .addMigrations(MIGRATION_13_14,MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22,MIGRATION_22_23,MIGRATION_23_24,MIGRATION_24_25,MIGRATION_25_26,MIGRATION_13_14,MIGRATION_26_27,MIGRATION_27_28,MIGRATION_29_30)
+                      .addMigrations(MIGRATION_13_14,MIGRATION_14_15,MIGRATION_15_16,MIGRATION_16_17,MIGRATION_17_18,MIGRATION_18_19,MIGRATION_19_20,MIGRATION_20_21,MIGRATION_21_22,MIGRATION_22_23,MIGRATION_23_24,MIGRATION_24_25,MIGRATION_25_26,MIGRATION_13_14,MIGRATION_26_27,MIGRATION_27_28,MIGRATION_29_30,MIGRATION_31_32)
                     .fallbackToDestructiveMigration()
                     .build();
 

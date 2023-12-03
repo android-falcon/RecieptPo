@@ -121,6 +121,43 @@ android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Last Price" />
+            <CheckBox
+                android:id="@+id/PuPrice"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="purchasing Price" />
+
+            <RadioGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/alegreya_sans_bold"
+                    android:text="Price"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:textSize="20sp" />
+                <RadioButton
+                    android:id="@+id/radioButton2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end|center"
+                    android:text="خاضع" />
+
+                <RadioButton
+                    android:id="@+id/radioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end|center"
+                    android:text="شامل" />
+            </RadioGroup>
+
+
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

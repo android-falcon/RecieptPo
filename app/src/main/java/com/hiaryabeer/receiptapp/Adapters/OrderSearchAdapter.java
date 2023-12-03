@@ -1,5 +1,7 @@
 package com.hiaryabeer.receiptapp.Adapters;
 
+import static com.hiaryabeer.receiptapp.Acitvits.Login.purPrice;
+
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
@@ -83,7 +85,20 @@ public class OrderSearchAdapter extends RecyclerView.Adapter<OrderSearchAdapter.
 
                 MainActivity.   itemname.setText( MainActivity.item.getNAME());
                 MainActivity.   itemqty.setText( MainActivity.item.getQty() + "");
-                MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
+
+                if(!purPrice.equals("1")){
+                    MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
+
+                }else{
+                    try {
+                        MainActivity.item.setF_D(Double.parseDouble(MainActivity.item.getLSPRICE()));
+                    }catch (Exception e){
+                        MainActivity.item.setF_D(0.0);
+
+                    }
+                    MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
+
+                }
 
                 MainActivity.     free.setText("");
                 final Handler handler = new Handler();
@@ -94,7 +109,20 @@ public class OrderSearchAdapter extends RecyclerView.Adapter<OrderSearchAdapter.
                         MainActivity.    itemcode.setError(null);
                         MainActivity.  itemname.setText( MainActivity.item.getNAME());
                         MainActivity.    itemqty.setText( MainActivity.item.getQty() + "");
-                        MainActivity.    itemprice.setText( String.valueOf(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + ""));
+                        if(!purPrice.equals("1")){
+                            MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
+
+                        }else{
+                            try {
+                                MainActivity.item.setF_D(Double.parseDouble(MainActivity.item.getLSPRICE()));
+                            }catch (Exception e){
+                                MainActivity.item.setF_D(0.0);
+                            }
+                            MainActivity.    itemprice.setText(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + "");
+
+
+                        }
+//                        MainActivity.    itemprice.setText( String.valueOf(convertToEnglish( String.valueOf(String.format("%.3f",MainActivity.item.getF_D()))) + ""));
                         MainActivity.     free.setText("");
                         MainActivity.     covrate_show.setText(GetUnitName(   MainActivity.item.getITEMNO()));
                         MainActivity.    item.setConvRate("1");
